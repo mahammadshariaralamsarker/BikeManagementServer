@@ -17,12 +17,12 @@ export const createUserValidationSchema = z.object(
                     }
                 ),
             role: z
-                .enum(["admin", "user"], {
+                .enum(["admin", "customer"], {
                     errorMap: () => ({
                         message: "Role must be either 'admin' or 'user'",
                     }),
-                }).default('user'),
-            isBlocked: z.boolean().default(false)
+                }).default('customer'),
+         
         })
     }
 )

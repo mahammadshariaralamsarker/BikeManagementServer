@@ -3,9 +3,9 @@ import { TUser } from "../user/user.interface"
 import { UserModel } from "../user/user.model"
 import { TLogin } from "./auth.interface"
 import bcrypt from 'bcrypt'
-import httpStatus from 'http-status-codes' 
-import AppError from "../../../error/app.error"
-import config from "../../../config"
+import httpStatus from 'http-status-codes'  
+import config from "../../config"
+import AppError from "../../error/app.error"
 const JWT_SECRET = config.jwt_access_secret as string
 
 const createUserIntoDB = async (payload: TUser) => {

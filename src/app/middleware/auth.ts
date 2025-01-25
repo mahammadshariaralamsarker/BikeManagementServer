@@ -6,8 +6,7 @@ import httpStatus from "http-status-codes";
 
 const JWT_SECRET = config.jwt_access_secret as string;
 const authUser = catchAsync(async (req, res, next) => {
-  const authHeader = req.headers.authorization as string;
-  console.log(authHeader);
+  const authHeader = req.headers.authorization as string; 
   if (!authHeader || !authHeader.startsWith("Bearer")) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,

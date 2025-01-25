@@ -16,7 +16,6 @@ router.patch(
   validateRequest(blockUserValidationSchema),
   userController.userBlockUpdate
 );
-
-// router.delete('/blogs/:Id', auth.authUser, auth.onlyAdmin, blogController.blogDelete)
+ 
 
 export const AdminRoute = router;

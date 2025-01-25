@@ -1,12 +1,13 @@
 import express from "express";
-import { createUserValidationSchema } from "../user/user.validation";
-import { LoginAuthValidationSchema } from "./auth.validation";
-import { authController } from "./auth.controller";
+import { createUserValidationSchema } from "../user/user.validation"; 
 import { validateRequest } from "../../middleware/validateRequest";
+import { bikeController } from "../bike/bike.controller";
+import { authController } from "../auth/auth.controller";
+import { LoginAuthValidationSchema } from "../auth/auth.validation";
 
 const router = express.Router();
 
-// route
+
 router.post(
   "/register",
   validateRequest(createUserValidationSchema),
@@ -18,4 +19,4 @@ router.post(
   authController.userLogin
 );
 
-export const AuthRoute = router;
+export const UserRoute = router;

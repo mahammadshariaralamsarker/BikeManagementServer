@@ -1,12 +1,11 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { TUser } from "../user/user.interface";
 import { User } from "../user/user.model";
-import { TLogin } from "./auth.interface";
+import { TChangePassword, TLogin } from "./auth.interface";
 import bcrypt from "bcrypt";
 import httpStatus from "http-status-codes";
 import config from "../../config";
 import AppError from "../../error/app.error";
-
 
 const JWT_SECRET = config.jwt_access_secret as string;
 const createUserIntoDB = async (payload: TUser) => {
@@ -27,59 +26,36 @@ const loginUserIntoDB = async (payload: TLogin) => {
       `Invalid ${email} no record create !`
     );
   const isDeleted = user?.isBlocked;
-
   if (isDeleted) {
     throw new AppError(httpStatus.FORBIDDEN, "This user is deleted !");
   }
-
   // Compare provided password with the hashed password
   const isPasswordValid = await bcrypt.compare(password, user?.password);
   if (!isPasswordValid) {
     throw new AppError(httpStatus.UNAUTHORIZED, "Invalid password!");
   }
-  const token = jwt.sign({ ...user }, JWT_SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ ...user }, JWT_SECRET, { expiresIn: "1d" });
   return token;
 };
-// const changePassword = async (
-//   userData: JwtPayload,
-//   payload: { oldPassword: string; newPassword: string }
-// ) => {
-//   // checking if the user is exist
-//   const user = await User.findById(userData.userId);
+const changePassword = async (id: string, payload: TChangePassword) => {
+  // checking if the user is exist
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
+  }
 
-//   if (!user) {
-//     throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
-//   }
+  //hash new password
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds)
+  );
+  await User.findByIdAndUpdate( id , { password: newHashedPassword });
 
-//   // checking if the user is blocked
+};
 
-//   const userStatus = user?.isBlocked;
-
-//   if (userStatus == true) {
-//     throw new AppError(httpStatus.FORBIDDEN, "This user is Deactivate ! !");
-//   }
-
-//   //hash new password
-//   const newHashedPassword = await bcrypt.hash(
-//     payload.newPassword,
-//     Number(config.bcrypt_salt_rounds)
-//   );
-
-//   await User.findOneAndUpdate(
-//     {
-//       id: userData.userId,
-//       role: userData.role,
-//     },
-//     {
-//       password: newHashedPassword,
-//     }
-//   );
-
-//   return null;
-// };
 
 export const AuthService = {
   createUserIntoDB,
   loginUserIntoDB,
-  // changePassword,
+  changePassword,
 };

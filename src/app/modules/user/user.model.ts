@@ -22,7 +22,11 @@ const userSchema = new Schema<TUser>({
         require: true,
         enum: ['admin', 'customer'],
         default: 'customer',
-    },
+    }, 
+    isBlocked:{
+        type: Boolean,  
+        default:  false
+    }
      
 }, { timestamps: true });
 

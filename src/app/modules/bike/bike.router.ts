@@ -5,8 +5,7 @@ const router = express.Router()
 
 router.get('/products/:productId',bikeController.getSingleBike)
 router.get('/products',bikeController.getBike)
-router.delete('/products/:productId',bikeController.deleteBike)
-router.put('/products/:productId',bikeController.updateBike)
+
 
 
 export const bikeRoutes = router; 

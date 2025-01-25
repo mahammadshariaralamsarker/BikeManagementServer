@@ -10,6 +10,7 @@ import { bikeController } from "../bike/bike.controller";
 const router = express.Router();
 
 // route
+// block user route
 router.patch(
   "/user/:userId/block",
   auth.authUser,
@@ -17,11 +18,23 @@ router.patch(
   validateRequest(blockUserValidationSchema),
   userController.userBlockUpdate
 );
+//  admin Product Operation
 router.post(
   "/products",
   auth.authUser,
   auth.onlyAdmin,
   bikeController.createBike
 );
-
+router.delete(
+  "/products/:productId",
+  auth.authUser,
+  auth.onlyAdmin,
+  bikeController.deleteBike
+);
+router.put(
+  "/products/:productId",
+  auth.authUser,
+  auth.onlyAdmin,
+  bikeController.updateBike
+);
 export const AdminRoute = router;

@@ -13,8 +13,7 @@ const authUser = catchAsync(async (req, res, next) => {
       "Access denied. No token provided or invalid format."
     );
   }
-  const token = authHeader.split(" ")[1];
-  console.log(token);
+  const token = authHeader.split(" ")[1]; 
   const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
   req.user = decoded;
   next();

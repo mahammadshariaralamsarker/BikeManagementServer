@@ -1,9 +1,10 @@
 import express from "express";
 import { createUserValidationSchema } from "../user/user.validation"; 
 import { validateRequest } from "../../middleware/validateRequest";
-import { bikeController } from "../bike/bike.controller";
+ 
 import { authController } from "../auth/auth.controller";
 import { LoginAuthValidationSchema } from "../auth/auth.validation";
+ 
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.post(
   authController.userCreateAccount
 );
 router.post(
-  "/login",
+  "/login", 
   validateRequest(LoginAuthValidationSchema),
   authController.userLogin
 );

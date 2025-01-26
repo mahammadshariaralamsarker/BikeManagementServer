@@ -22,11 +22,18 @@ const userLogin = catchAsync(async (req, res) => {
   const data = req.body;
   if (!data) throw new AppError(httpStatus.NOT_FOUND, "Invalid credentials");
   const result = await AuthService.loginUserIntoDB(data);
+  const { refreshToken, token } = result; 
+  res.cookie('refreshToken', refreshToken, {
+    secure: config.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'none',
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+  });
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
     message: "Login successful",
-    data: { token: result },
+    data: { token: token },
   });
 });
 
@@ -35,7 +42,7 @@ const changePassword = catchAsync(async (req, res) => {
   const id = req.params.userId;
   const data = req.body;
   const result = await AuthService.changePassword(id, data);
-
+  
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

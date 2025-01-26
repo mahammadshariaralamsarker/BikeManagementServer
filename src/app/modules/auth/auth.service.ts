@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import httpStatus from "http-status-codes";
 import config from "../../config";
 import AppError from "../../error/app.error";
+import { createToken } from "./auth.utils";
 
 const JWT_SECRET = config.jwt_access_secret as string;
 const createUserIntoDB = async (payload: TUser) => {
@@ -35,7 +36,8 @@ const loginUserIntoDB = async (payload: TLogin) => {
     throw new AppError(httpStatus.UNAUTHORIZED, "Invalid password!");
   }
   const token = jwt.sign({ ...user }, JWT_SECRET, { expiresIn: "1d" });
-  return token;
+  const refreshToken = jwt.sign({ ...user }, JWT_SECRET, { expiresIn: "10d" });
+  return { token, refreshToken };
 };
 const changePassword = async (id: string, payload: TChangePassword) => {
   // checking if the user is exist
@@ -49,10 +51,8 @@ const changePassword = async (id: string, payload: TChangePassword) => {
     payload.newPassword,
     Number(config.bcrypt_salt_rounds)
   );
-  await User.findByIdAndUpdate( id , { password: newHashedPassword });
-
+  await User.findByIdAndUpdate(id, { password: newHashedPassword });
 };
-
 
 export const AuthService = {
   createUserIntoDB,

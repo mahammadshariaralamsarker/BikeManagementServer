@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
-import { TPassword, TUser } from "./user.interface";
+import { TPassword, TUser, UserModel } from "./user.interface";
 import bcrypt from "bcrypt";
 import config from "../../config";
-const userSchema = new Schema<TUser, TPassword>(
+const userSchema = new Schema<TUser, TPassword,UserModel>(
   {
     name: {
       type: String,
@@ -60,5 +60,12 @@ userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
     new Date(passwordChangedTimestamp).getTime() / 1000;
   return passwordChangedTime > jwtIssuedTimestamp;
 };
-
-export const User = model<TUser>("User", userSchema);
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+  passwordChangedTimestamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimestamp).getTime() / 1000;
+  return passwordChangedTime > jwtIssuedTimestamp;
+}; 
+export const User = model<TUser,UserModel>("User", userSchema);

@@ -5,7 +5,8 @@ import { TChangePassword, TLogin } from "./auth.interface";
 import bcrypt from "bcrypt";
 import httpStatus from "http-status-codes";
 import config from "../../config";
-import AppError from "../../error/app.error"; 
+import AppError from "../../error/app.error";
+import { createToken, verifyToken } from "./auth.utils";
 
 const JWT_SECRET = config.jwt_access_secret as string;
 const createUserIntoDB = async (payload: TUser) => {
@@ -52,9 +53,25 @@ const changePassword = async (id: string, payload: TChangePassword) => {
   );
   await User.findByIdAndUpdate(id, { password: newHashedPassword });
 };
+const refreshToken = async (token: string) => {
+  // checking if the given token is valid
+  const decoded = verifyToken(token, config.jwt_refresh_secret as string);
 
+  const { userId, iat } = decoded;
+
+  // checking if the user is exist
+  const user = await User.isUserExistsByCustomId(userId); 
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
+  }
+  const accessToken =  jwt.sign({ ...user }, JWT_SECRET, { expiresIn: "10d" });
+  return {
+    accessToken,
+  };
+};
 export const AuthService = {
   createUserIntoDB,
   loginUserIntoDB,
   changePassword,
+  refreshToken,
 };

@@ -5,8 +5,8 @@ const router = express.Router();
 
 // general route
 router.get("/products/:productId", bikeController.getSingleBike);
-router.get("/products",auth.authUser,
-  auth.onlyAdmin, bikeController.getBike);
+router.get("/products", 
+    bikeController.getBike);
  
 //  admin Product Operation
 router.post(

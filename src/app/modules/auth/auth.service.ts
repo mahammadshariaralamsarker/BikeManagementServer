@@ -21,6 +21,7 @@ const loginUserIntoDB = async (payload: TLogin) => {
     throw new AppError(httpStatus.NOT_FOUND, "Invalid credentials!");
 
   const user = await User.findOne({ email: email }).select("+password");
+  console.log(user);
   if (!user)
     throw new AppError(
       httpStatus.NOT_FOUND,
@@ -35,8 +36,13 @@ const loginUserIntoDB = async (payload: TLogin) => {
   if (!isPasswordValid) {
     throw new AppError(httpStatus.UNAUTHORIZED, "Invalid password!");
   }
-  const token = jwt.sign({ ...user }, JWT_SECRET, { expiresIn: "1d" });
-  const refreshToken = jwt.sign({ ...user }, JWT_SECRET, { expiresIn: "10d" });
+  const JwtPayload = {
+    name:user.name,
+    email:user.email,
+    role:user.role
+  }
+  const token = jwt.sign(JwtPayload, JWT_SECRET, { expiresIn: "1d" });
+  const refreshToken = jwt.sign(JwtPayload, JWT_SECRET, { expiresIn: "10d" });
   return { token, refreshToken };
 };
 const changePassword = async (id: string, payload: TChangePassword) => {
@@ -64,7 +70,13 @@ const refreshToken = async (token: string) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
   }
-  const accessToken =  jwt.sign({ ...user }, JWT_SECRET, { expiresIn: "10d" });
+
+  const JwtPayload = {
+    name:user.name,
+    email:user.email,
+    role:user.role
+  }
+  const accessToken =  jwt.sign(JwtPayload, JWT_SECRET, { expiresIn: "10d" });
   return {
     accessToken,
   };

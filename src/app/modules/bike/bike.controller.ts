@@ -19,6 +19,7 @@ const createBike = async (req: Request, res: Response) => {
   }
 };
 const getBike = async (req: Request, res: Response) => {
+  console.log(req.cookies);
   const { searchTerm } = req.query;
   try {
     const result = await BikeServices.getBikeFromDB(searchTerm as string);

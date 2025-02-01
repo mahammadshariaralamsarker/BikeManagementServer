@@ -19,7 +19,9 @@ const authUser = catchAsync(async (req, res, next) => {
   next();
 });
 const onlyAdmin = catchAsync(async (req, res, next) => {
-  const user = req.user?._doc;
+  const authHeader = req.headers.authorization as string; 
+  const user = jwt.verify(authHeader, JWT_SECRET) as JwtPayload;
+  
   if (!user || !user.role) {
     throw new Error("Access denied. No token provided or invalid format.");
   }

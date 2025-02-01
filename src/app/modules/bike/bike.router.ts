@@ -11,7 +11,6 @@ router.get("/products",
 //  admin Product Operation
 router.post(
   "/products",
-  auth.authUser,
   auth.onlyAdmin,
   bikeController.createBike
 );

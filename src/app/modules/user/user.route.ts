@@ -21,7 +21,7 @@ router.post(
   '/refresh-token',
   validateRequest( refreshTokenValidationSchema),
   authController.refreshToken,
-);
+);  
 router.patch("/user/:userId",auth.authUser, authController.changePassword);
 
 export const UserRoute = router;

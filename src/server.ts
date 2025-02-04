@@ -1,15 +1,16 @@
-import mongoose from "mongoose";
-import app from "./app";
-import config from "./app/config";
+import mongoose from 'mongoose';
+import app from './app';
+import config from './app/config';
 
-async function Main() {
+// Database and MongoDB Connection
+async function main() {
   try {
     await mongoose.connect(config.database_url as string);
     app.listen(config.port, () => {
-      console.log(`Bike store app listening on port ${config.port}`);
+      console.log(`Bi Cycle app listening on port ${config.port}`);
     });
   } catch (error) {
     console.log(error);
   }
 }
-Main();
+main();

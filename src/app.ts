@@ -1,20 +1,30 @@
-import express, { Application } from "express";
-import cors from "cors";
-import  cookieParser from 'cookie-parser'
-import { bikeRoutes } from "./app/modules/bike/bike.router";
-import { OrderRoutes } from "./app/modules/order/order.router"; 
-import router from "./app/routes";
+import express, { Application, Request, Response } from 'express';
+import cors from 'cors';
+import router from './app/routes';
+import globalErrorHandler from './app/middlewares/globalErrorhandler';
+import notFound from './app/middlewares/notFound';
 const app: Application = express();
-
-// Parser
+import cookieParser from 'cookie-parser';
+// Middleware
 app.use(express.json());
-app.use(cors({origin:"http://localhost:5173",credentials:true}));
-app.use(cookieParser())
-app.use("/api", router);
-app.use("/api", bikeRoutes);
-app.use("/api", OrderRoutes);
-app.get("/", (req, res) => {
-  res.send("The Bike Store Server is Running");
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'https://Bike-haven.vercel.app'],
+    credentials: true,
+  }),
+);
+// application routes
+app.use('/api/v1', router);
+
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({
+    message: 'Bike Server Is Running...!',
+  });
 });
+
+// Handle Global Error
+app.use(globalErrorHandler);
+app.use(notFound);
 
 export default app;

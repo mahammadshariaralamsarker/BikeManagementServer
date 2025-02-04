@@ -1,26 +1,25 @@
-import { Model } from "mongoose";
+/* eslint-disable no-unused-vars */
+import { Model } from 'mongoose';
+import { UserRole } from './user.constant';
 
 export type TUser = {
   name: string;
   email: string;
   password: string;
-  role: "admin" | "customer";
-  isBlocked: boolean;
+  role: 'customer' | 'admin';
+  image: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  status: 'active' | 'deactivate';
 };
+
 export interface UserModel extends Model<TUser> {
-  //instance methods for checking if the user exist
-  isUserExistsByCustomId(id: string): Promise<TUser>;
-  //instance methods for checking if passwords are matched
+  isExistUserByEmail(email: string): Promise<TUser>;
   isPasswordMatched(
     plainTextPassword: string,
-    hashedPassword: string
+    hashedPassword: string,
   ): Promise<boolean>;
-  isJWTIssuedBeforePasswordChanged(
-    passwordChangedTimestamp: Date,
-    jwtIssuedTimestamp: number
-  ): boolean;
 }
-export type TPassword = {
-  currentPassword: string;
-  newPassword: string;
-};
+
+export type TUserRole = keyof typeof UserRole;

@@ -1,37 +1,236 @@
-Front_End_Requirements:https://github.com/Apollo-Level2-Web-Dev/L2B4-Frontend-Track-Assignment-4/blob/main/2-Bike-Shop-Assignment-Requirement.md
+# 🚲 Bike Store API
 
-Bike Management API
-A simple Node.js-based API for managing a bike inventory. The API allows you to create, read, update, and delete bike records, as well as search for bikes by query terms such as name, brand, or category.
+A Node.js, Express.js and MongoDB based API designed to manage a Bike store. The API enables Admin can Create Bike and Manage and users can Create Account place orders and Complete Payment using ShurjoPay.
 
-Features
-1.Create, update, delete, and retrieve bikes from the database
-2.Search bikes by query (e.g., name, brand, or category)
-3.Handle error responses with meaningful messages
-4.Basic validation for bike data
-5.Make order 
-7.when you make the order the quantity is checked ata the same time quantity is updated with product quantity and instock
+## 🚀 Features
 
-Tech Stack
-1.Node.js: JavaScript runtime environment
-2.Express: Web framework for building the API
-3.MongoDB: Database for storing bike data
-4.Mongoose: MongoDB object modeling for Node.js
+1. **Order Bikes:** Users can place orders with Product id and Quantity. Total Price and User Info Automatically Calculate and Added from Backend.
+2. **Payment System:** User Can pay Using ShurjoPay Payment Gateway.
+3. **Profile Manage:** User Can Create and Update Personal Profile Information.
 
+## 🛠️ Installation and Setup
 
-Prerequisites
-Before running the project, ensure you have the following installed:
-Node.js
-MongoDB (or use MongoDB Atlas for a cloud database)
-Installation
-Clone the repository:
-Navigate into the project folder:
+Follow these steps to set up the project locally:
+
+1. Clone the repository:
+
+   ```bash
+   git clone <repository-url>
+   cd <project-folder>
+   ```
+
+2.Install the required dependencies:
+
+```bash
 npm install
-Set up your environment variables:
+```
 
-Create a .env file in the root directory and add:
-PORT=5000
-DATABASE_URL=make it from your mongodb cluster 
+3. Create a .env file in the root directory and configure the following environment variables:
 
-Running the Project
-To run the project in development mode: npm run start:dev
-This will start the server on http://localhost:5000.
+```bash
+ PORT=5000
+MONGODB_URL=<your-mongodb-url>
+NODE_ENV=<deployment>
+BCRYPT_SALT_ROUNDS=<bcrypt_salt_number>
+JWT_ACCESS_TOKEN_SECRET=<jwt_access_token_secret>
+JWT_ACCESS_EXPIRES_IN=<jwt_access_experies_in>
+SP_ENDPOINT=<shurjo_pay_sp_end_point>
+SP_USERNAME=<shurjo_pay_sp_username>
+SP_PASSWORD=<shurjo_pay_sp_password>
+SP_PREFIX=<shurjo_pay_sp_prefix>
+SP_RETURN_URL=<shurjo_pay_sp_return_url>
+DB_FILE=<shurjo_pay_db_file>
+```
+
+4. Start the server:
+
+```bash
+ npm run start:dev
+```
+
+5. The API will be available at
+
+```bash
+http://localhost:5000
+```
+
+# 📚 API Endpoints
+
+## Product Endpoints
+
+1. Create a Bike
+   Method: POST
+
+URL:
+
+```bash
+/api/v1/Bike
+```
+
+Description: Add a new Bike to the database.
+
+2. Get All Bikes
+   Method: GET
+   URL:
+
+```bash
+/api/v1/Bike
+```
+
+Description: Retrieves All Bikes. Optional search by type using the searchTerm query parameter by brand, Bike name, or category and Filters for price range, model, brand, category, and availability.
+
+3. Get a Single Bike
+   Method: GET
+   URL:
+
+```bash
+/api/v1/Bike/:productId
+```
+
+Description: Fetch details of a specific Bike by ID.
+
+4. Update a Bike
+   Method: PATCH
+   URL:
+
+```bash
+/api/v1/Bike/:productId
+```
+
+Description: Admin Can Updates the details of a specific Bike by ID.
+
+5. Delete a Bike
+   Method: DELETE
+   URL:
+
+```bash
+/api/v1/Bike/:productId
+```
+
+Description: Deletes a Bike by ID.
+
+## Order Endpoints
+
+1. Place an Order
+   Method: POST
+   URL:
+
+```bash
+/api/v1/order/create
+```
+
+Description: User can Place an order for a Bike.
+
+2. Update Oder Delivery Status
+   Method: PATCH
+   URL:
+
+```bash
+/api/v1/order/delivery/status/:orderId
+```
+
+Description: Admin Can Update a Order Delivery Status.
+
+3. Payment Verify
+   Method: GET
+   URL:
+
+```bash
+/api/v1/order/verify
+```
+
+Description: User Can Verify Payment.
+
+4. Get Loggedin user Order
+   Method: GET
+   URL:
+
+```bash
+/api/v1/order/all
+```
+
+Description: User Can See All Orders.
+
+5. All Orders
+   Method: GET
+   URL:
+
+```bash
+/api/v1/order/all-orders
+```
+
+Description: Get All Orders For Admin.
+
+6. Delete Orders
+   Method: DELETE
+   URL:
+
+```bash
+/api/v1/order/delete/:orderId
+```
+
+Description: Admin Can Delete Any Orders.
+
+## User Endpoints
+
+1. Create User
+   Method: POST
+   URL:
+
+```bash
+/api/v1/user
+```
+
+Description: User can Create Account.
+
+2. Get All User
+   Method: GET
+   URL:
+
+```bash
+/api/v1/user
+```
+
+Description:Get All User From DB.
+
+3. User Status Update
+   Method: PATCH
+   URL:
+
+```bash
+/api/v1/user/update
+```
+
+Description: Admin Can Update User Status.
+
+## Auth Endpoints
+
+1. Login User
+   Method: POST
+   URL:
+
+```bash
+/api/v1/auth/login
+```
+
+Description: User can Login.
+
+2. Update User Profile Info
+   Method: PATCH
+   URL:
+
+```bash
+/api/v1/auth/update
+```
+
+Description: User can Update Profile Info.
+
+3. Get Logged in User Info
+   Method: GET
+   URL:
+
+```bash
+/api/v1/auth/me
+```
+
+Description: User can Get Profile Info.

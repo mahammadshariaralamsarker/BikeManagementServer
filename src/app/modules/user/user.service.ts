@@ -1,22 +1,29 @@
- 
-import httpStatus from 'http-status-codes'
-import { TUser } from "./user.interface" 
-import AppError from '../../error/app.error';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { TUser } from './user.interface';
 import { User } from './user.model';
 
+// User Save To Database
+const userSaveToDatabase = async (userInfo: TUser) => {
+  const user = await User.create(userInfo);
 
-const updateUserIntoDB = async (payload: Partial<TUser>, Id: string) => {
-    const result = await User.findOneAndUpdate({ _id: Id }, payload, { new: true });
-    if (!result) throw new AppError(httpStatus.NOT_FOUND, "Invalid User Infomation")
-    return result;
-}
-const blockUserIntoDB = async (Id: string) => {
-    const result = await User.findOneAndUpdate({ _id: Id }, { isBlocked: true }, { new: true });
-    if (!result) throw new AppError(httpStatus.NOT_FOUND, "Invalid User Infomation")
-    return result;
-}
+  return user;
+};
 
 
-export const UserService = {
-    updateUserIntoDB,blockUserIntoDB
-}
+// User Save To Database
+const usergetFromDatabase = async () => {
+  const user = await User.find();
+
+  return user;
+};
+// User Update To Database
+const userUpdateFromDatabase = async (data:{status:string, id:string}) => {
+  const user = await User.findByIdAndUpdate(data?.id, { status: data?.status }, {new:true});
+
+  return user;
+};
+export const UserServices = {
+  userSaveToDatabase,
+  usergetFromDatabase,
+  userUpdateFromDatabase,
+};

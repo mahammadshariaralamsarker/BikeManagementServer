@@ -2,9 +2,9 @@ import { JwtPayload } from 'jsonwebtoken';
 import { IOrder } from './order.interface';
 import { User } from '../user/user.model';
 import AppError from '../../errors/AppError';
-import { Bike } from '../Bikes/Bike.model';
 import Order from './order.model';
 import { OrderUtils } from './order.utils';
+import { Bike } from '../bike/bike.model';
 
 // Bi Cycle Data Save to Database
 const orderSaveToDatabase = async (
@@ -23,16 +23,16 @@ const orderSaveToDatabase = async (
   let totalPrice = 0;
   const orderDetails = await Promise.all(
     products?.map(async (item) => {
-      const Bike = await Bike.findById(item.product);
-      if ((Bike?.stock as number) < item?.quantity) {
+      const bike = await Bike.findById(item.product);
+      if ((bike?.stock as number) < item?.quantity) {
         throw new AppError(400, 'Insufficient Stock!');
       }
-      if (Bike) {
-        const subTotal = Bike ? (Bike.price || 0) * item.quantity : 0;
+      if (bike) {
+        const subTotal = Bike ? (bike.price || 0) * item.quantity : 0;
         totalPrice += subTotal;
         // Stock Decreament
-        Bike.stock -= item.quantity;
-        await Bike.save();
+        bike.stock -= item.quantity;
+        await bike.save();
         return item;
       }
     }),
@@ -169,9 +169,9 @@ const updateOrderFromoDatabase = async (
   let totalPrice = 0;
   const orderDetails = await Promise.all(
     products?.map(async (item) => {
-      const Bike = await Bike.findById(item.product);
-      if (Bike) {
-        const subTotal = Bike ? (Bike.price || 0) * item.quantity : 0;
+      const bike = await Bike.findById(item.product);
+      if (bike) {
+        const subTotal = bike ? (bike.price || 0) * item.quantity : 0;
         totalPrice += subTotal;
         return item;
       }

@@ -1,6 +1,7 @@
-import { BikeServices } from './Bike.services';
+ 
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
+import { BikeServices } from './bike.services';
 
 // Create Bi Cycle Controllers
 const createBike = catchAsync(async (req, res) => {

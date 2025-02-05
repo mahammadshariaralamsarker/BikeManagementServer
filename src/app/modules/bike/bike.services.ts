@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import QueryBuilder from '../../builder/QueryBuilder';
 // import { searchByBike } from './Bike.constant';
-import { Bike } from './Bike.model';
-import { TBike } from './BikeInterface';
+
+import { Bike } from './bike.model';
+import { TBike } from './bikeInterface';
 
 // Bi Cycle Data Save to Database
-const BikeDataSaveToDatabase = async (Bike: TBike) => {
-  const result = await Bike.create(Bike);
+const BikeDataSaveToDatabase = async (bike: TBike) => {
+  const result = await Bike.create(bike);
   return result;
 };
 

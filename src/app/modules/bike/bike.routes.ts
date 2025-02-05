@@ -1,9 +1,8 @@
-import express from 'express';
-import { BikeControllers } from './Bike.controllers';
-import requestValidation from '../../middlewares/requestValidation';
-import { BikeValidationSchemas } from './Bike.validation.schemas';
+import express from 'express'; 
+import requestValidation from '../../middlewares/requestValidation'; 
 import auth from '../../middlewares/authChecking';
-// import auth from '../../middlewares/authChecking';
+import { BikeValidationSchemas } from './bike.validation.schemas';
+import { BikeControllers } from './bike.controllers'; 
 
 // Init Router
 const router = express.Router();

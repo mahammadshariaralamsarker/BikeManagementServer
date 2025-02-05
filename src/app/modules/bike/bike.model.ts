@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { TBike } from './BikeInterface';
+import { TBike } from './bikeInterface';
 
 // Create Bi Cycle Schema
 const BikeSchema = new Schema<TBike>(

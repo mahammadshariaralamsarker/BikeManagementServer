@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { BikeCategory } from './Bike.constant';
+import { z } from 'zod'; 
+import { BikeCategory } from './bike.constant';
 
 const createBikeValidationSchema = z.object({
   body: z.object({

@@ -1,25 +1,31 @@
 /* eslint-disable no-unused-vars */
-import { Model } from 'mongoose';
-import { UserRole } from './user.constant';
+import { Model, Types } from 'mongoose';
+import { USER_ROLE } from './user.constant';
 
-export type TUser = {
+export interface TUser {
+  _id?: Types.ObjectId;
   name: string;
   email: string;
   password: string;
-  role: 'customer' | 'admin';
-  image: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  status: 'active' | 'deactivate';
-};
+  contactNo: string;
+  gender: 'male' | 'female' | 'other';
+  dateOfBirth?: Date;
+  presentAddress: string;
+  permanentAddress: string;
+  profileImg?: string;
+  role: 'buyer' | 'seller';
+  isDeleted: boolean;
+}
 
 export interface UserModel extends Model<TUser> {
-  isExistUserByEmail(email: string): Promise<TUser>;
+  // instance method for checking if the user exists or not
+  isUserExists(email: string): Promise<TUser | null>;
+
+  //instance methods for checking if passwords are matched
   isPasswordMatched(
     plainTextPassword: string,
     hashedPassword: string,
   ): Promise<boolean>;
 }
 
-export type TUserRole = keyof typeof UserRole;
+export type TUserRole = keyof typeof USER_ROLE;

@@ -1,59 +1,72 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { model, Schema } from 'mongoose';
-import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
+import { Schema, model } from 'mongoose';
 import config from '../../config';
-// Create Bi Cycle Schema
+import { TUser, UserModel } from './user.interface';
+
 const userSchema = new Schema<TUser, UserModel>(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, 'Name is required'],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, 'Email is required'],
+      unique: true,
     },
     password: {
       type: String,
       required: true,
       select: 0,
     },
-    image: {
+    contactNo: {
       type: String,
+      required: [true, 'Contact number is required'],
     },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female', 'other'],
+        message: '{VALUE} is not a valid gender',
+      },
+      required: [true, 'Gender is required'],
+    },
+    dateOfBirth: { type: Date },
+    presentAddress: {
+      type: String,
+      required: [true, 'Present address is required'],
+    },
+    permanentAddress: {
+      type: String,
+      required: [true, 'Permanent address is required'],
+    },
+    profileImg: { type: String },
     role: {
       type: String,
-      enum: ['customer', 'admin'],
-      default: 'customer',
+      enum: ['buyer', 'seller'],
+      required: true,
     },
-    phone: {
-      type: String,
-    },
-    address: {
-      type: String,
-    },
-    city: {
-      type: String,
-    },
-    status: {
-      type: String,
-      default: 'active',
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {
     timestamps: true,
   },
 );
-// Has Password Using Pre Hok
+
 userSchema.pre('save', async function (next) {
-  const user = this;
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this; // doc
+  // hashing password and save into DB
+
   user.password = await bcrypt.hash(
     user.password,
     Number(config.bcrypt_salt_rounds),
   );
+
   next();
 });
 
@@ -63,7 +76,7 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 
-userSchema.statics.isExistUserByEmail = async function (email: string) {
+userSchema.statics.isUserExists = async function (email: string) {
   return await User.findOne({ email }).select('+password');
 };
 
@@ -74,5 +87,4 @@ userSchema.statics.isPasswordMatched = async function (
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
-// Export Model
 export const User = model<TUser, UserModel>('User', userSchema);

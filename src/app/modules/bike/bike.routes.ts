@@ -1,33 +1,60 @@
-import express from 'express'; 
-import requestValidation from '../../middlewares/requestValidation'; 
-import auth from '../../middlewares/authChecking';
-import { BikeValidationSchemas } from './bike.validation.schemas';
-import { BikeControllers } from './bike.controllers'; 
+import express, { NextFunction, Request, Response } from 'express';
+import validateRequest from '../../middlewares/validateRequest';
+import { upload } from '../../utils/sendImageToCloudinary';
+import { BikeVAlidation } from './bike.validation';
+import { BikeControllers } from './bike.controller';
+import auth from '../../middlewares/auth';
+import { USER_ROLE } from '../user/user.constant';
 
-// Init Router
 const router = express.Router();
-// Create Bike
+
 router.post(
   '/',
-  auth('admin'),
-  requestValidation(BikeValidationSchemas.createBikeValidationSchema),
-  BikeControllers.createBike,
-);
-//Get All Bike
-router.get('/', BikeControllers.allBike);
-router.get('/specific', BikeControllers.getSpecificField);
-// Get Single Bike
-router.get('/:productId', BikeControllers.singleBike);
-// Update Single Bike
-// router.put('/:productId', BikeControllers.updateSingleBike);
-router.patch(
-  '/:productId',
-  auth('admin'),
-  requestValidation(BikeValidationSchemas.updateBikeValidationSchema),
-  BikeControllers.updateSingleBike,
-);
-// Delete Single Bike
-router.delete('/:productId', auth('admin'), BikeControllers.deleteSingleBike);
+  auth(USER_ROLE.seller),
 
-// Export Bi-Cycle Router
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+
+  validateRequest(BikeVAlidation.createBikeValidationSchema),
+  BikeControllers.addBike,
+);
+
+router.post(
+  '/duplicate/:id',
+  auth(USER_ROLE.seller),
+
+  validateRequest(BikeVAlidation.createBikeValidationSchema),
+  BikeControllers.duplicateBike,
+);
+
+router.get(
+  '/', 
+  BikeControllers.getAllBikes,
+);
+router.get('/analytics',  BikeControllers.bikeAnalytics);
+
+router.get(
+  '/:id', 
+  BikeControllers.getSingleBike,
+);
+
+router.patch(
+  '/:id',
+  auth(USER_ROLE.seller),
+  validateRequest(BikeVAlidation.updateBikeValidationSchema),
+  BikeControllers.updateBike,
+);
+
+router.delete(
+  '/bulk-delete',
+  auth(USER_ROLE.seller),
+  validateRequest(BikeVAlidation.bulkDeleteBikeValidationSchema),
+  BikeControllers.bulkDeleteBikes,
+);
+
+router.delete('/:id', auth(USER_ROLE.seller), BikeControllers.deleteBike);
+
 export const BikeRoutes = router;

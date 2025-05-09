@@ -1,4 +1,4 @@
-export const UserRole = {
-  customer: 'customer',
-  admin: 'admin',
+export const USER_ROLE = {
+  buyer: 'buyer',
+  seller: 'seller',
 } as const;
